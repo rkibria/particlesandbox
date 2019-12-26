@@ -91,6 +91,17 @@ body {
 		<p style="margin-bottom:1px;">
 		<form>
 			<fieldset>
+			<legend>Settings</legend>
+				Background RGB:<br>
+				<input type="number" id="ID_BG_R" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				<input type="number" id="ID_BG_G" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				<input type="number" id="ID_BG_B" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+			</fieldset>
+		</form>
+
+		<p style="margin-bottom:1px;">
+		<form>
+			<fieldset>
 			<legend>Postprocessing</legend>
 				Fading: <input type="number" id="ID_FADE" min="0" max="1" value="0.5" step="0.05" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				<input type="checkbox" id="ID_BLUR" onclick="onResetButton()">Blur (reload page to disable!)<br>
@@ -461,10 +472,16 @@ const particles = new ParticleSwarm(canvasW, canvasH);
 
 let fade_factor = 0;
 let blur_enabled = false;
+let bg_r = 0;
+let bg_g = 0;
+let bg_b = 0;
 
 function readParameters() {
 	fade_factor = parseFloat(document.getElementById("ID_FADE").value);
 	blur_enabled = document.getElementById("ID_BLUR").checked;
+	bg_r = parseFloat(document.getElementById("ID_BG_R").value);
+	bg_g = parseFloat(document.getElementById("ID_BG_G").value);
+	bg_b = parseFloat(document.getElementById("ID_BG_B").value);
 
 	particles.count = parseFloat(document.getElementById("ID_PARTICLES").value);
 	particles.radius = parseFloat(document.getElementById("ID_RADIUS").value);
@@ -477,9 +494,9 @@ function readParameters() {
 readParameters();
 particles.reset();
 
-function darkenImage(context, factor) {
+function fadeImage(context, r, g, b, a) {
 	context.save();
-	context.fillStyle = 'rgba(0,0,0,' + factor + ')';
+	context.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 	context.fillRect(0, 0, canvasW, canvasH);
 	context.restore();
 }
@@ -507,7 +524,7 @@ window.onload = function() {
 	(function drawFrame () {
 		window.requestAnimationFrame(drawFrame, canvas);
 
-		darkenImage(context, fade_factor);
+		fadeImage(context, bg_r, bg_g, bg_b, fade_factor);
 
 		particles.draw(context);
 
@@ -526,8 +543,8 @@ function onResetButton() {
 
 	const context = canvas.getContext('2d');
 	context.save();
-	context.fillStyle = 'black';
-	context.clearRect(0, 0, canvasW, canvasH);
+	context.fillStyle = 'rgb(' + bg_r + ',' + bg_g + ',' + bg_b + ')';
+	context.fillRect(0, 0, canvasW, canvasH);
 	context.restore();
 
 	readParameters();
