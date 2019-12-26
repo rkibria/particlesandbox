@@ -582,6 +582,10 @@ function onRandomizeButton() {
 		document.getElementById("ID_FRICTION").value = getRandom(0, 1);
 		document.getElementById("ID_CLAMP_SPEED").value = getRandom(0.01, 50);
 
+		document.getElementById("ID_BG_R").value = getRandomInt(0, 255);
+		document.getElementById("ID_BG_G").value = getRandomInt(0, 255);
+		document.getElementById("ID_BG_B").value = getRandomInt(0, 255);
+
 		document.getElementById("ID_FADE").value = getRandom(0, 0.5);
 		document.getElementById("ID_ROTATE").value = (Math.random() < 0.5) ? 0 : getRandom(-10, 10);
 	}
