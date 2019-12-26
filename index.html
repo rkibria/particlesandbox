@@ -108,6 +108,9 @@ body {
 			</fieldset>
 		</form>
 
+		<p style="margin-bottom:1px;">
+		<button class="button button1" onclick="onSaveButton()">Save png</button><br>
+
 	</div>
 </div>
 
@@ -544,6 +547,7 @@ function onResetButton() {
 	const context = canvas.getContext('2d');
 	context.save();
 	context.fillStyle = 'rgb(' + bg_r + ',' + bg_g + ',' + bg_b + ')';
+	context.clearRect(0, 0, canvasW, canvasH);
 	context.fillRect(0, 0, canvasW, canvasH);
 	context.restore();
 
@@ -566,6 +570,11 @@ function onRandomizeButton() {
 	}
 	lockReset = false;
 	onResetButton();
+}
+
+function onSaveButton() {
+	var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+	window.location.href = image;
 }
 
 </script>
