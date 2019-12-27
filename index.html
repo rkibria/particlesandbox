@@ -556,11 +556,11 @@ window.onload = function() {
 
 		particles.draw(context);
 
+		translateImage(context, translateX, translateY);
+
 		if(rotatePerFrame != 0) {
 			rotateImage(context, rotatePerFrame);
 		}
-
-		translateImage(context, translateX, translateY);
 
 		if(blur_enabled) {
 			blurImage(context);
