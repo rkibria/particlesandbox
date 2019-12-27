@@ -556,7 +556,9 @@ window.onload = function() {
 
 		particles.draw(context);
 
-		translateImage(context, translateX, translateY);
+		if(!(translateX == 0 && translateY == 0)) {
+			translateImage(context, translateX, translateY);
+		}
 
 		if(rotatePerFrame != 0) {
 			rotateImage(context, rotatePerFrame);
