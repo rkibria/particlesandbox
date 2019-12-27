@@ -79,7 +79,7 @@ body {
 			<fieldset>
 			<legend>Particles</legend>
 				Amount: <input type="number" id="ID_PARTICLES" min="1" value="50" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Radius: <input type="number" id="ID_RADIUS" min="1" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Radius (<0 for squares): <input type="number" id="ID_RADIUS" min="-50" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				<input type="checkbox" id="ID_RADIUS_RANDOM" onclick="onResetButton()">Randomize radius<br>
 				Repulsion: <input type="number" id="ID_REPULSION" min="0" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Attraction: <input type="number" id="ID_ATTRACTION" min="0" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
@@ -357,11 +357,12 @@ Particle.prototype.draw = function (context, color) {
 	if (color === undefined) { color = "#ffffff"; }
 	const x = Math.trunc(this.pos.x);
 	const y = Math.trunc(this.pos.y);
-	const r = Math.trunc(this.radius);
+	let r = Math.trunc(this.radius);
 
 	context.save();
 	context.fillStyle = color;
 	if(r <= 1) {
+		r = Math.abs(r);
 		const d = r * 2;
 		context.fillRect(x - r, y - r, d, d);
 	}
@@ -396,7 +397,7 @@ function ParticleSwarm(width, height) {
 ParticleSwarm.prototype.reset = function() {
 	this.particles_list = [];
 	for (i = 0; i < this.count; i++) {
-		const radius = this.radiusRandom ? Math.trunc(1 + Math.random() * this.radius) : this.radius;
+		const radius = this.radiusRandom ? getRandomInt(0, this.radius) : this.radius;
 		var particle = new Particle(radius);
 		particle.pos.randomInRange(0, this.width, 0, this.height);
 		particle.vel.randomInUnitDisk().multiplyScalar(3);
@@ -414,7 +415,7 @@ ParticleSwarm.prototype.getGravitationalForce = function(f, p1, p2, r, factor) {
 ParticleSwarm.prototype.getForce = function(p1, p2) {
 	const f = new Vec2();
 	let r = getVec2Distance(p1.pos, p2.pos);
-	const td = p1.radius + p2.radius;
+	const td = Math.abs(p1.radius) + Math.abs(p2.radius);
 	if (r < td) {
 		if(this.repulsion_factor != 0 && r != 0) {
 			this.getGravitationalForce(f, p1, p2, r, -this.repulsion_factor);
@@ -588,7 +589,7 @@ function onRandomizeButton() {
 	lockReset = true;
 	{
 		document.getElementById("ID_PARTICLES").value = getRandomInt(1, 200);
-		document.getElementById("ID_RADIUS").value = getRandomInt(1, 50);
+		document.getElementById("ID_RADIUS").value = getRandomInt(-50, 50);
 		document.getElementById("ID_RADIUS_RANDOM").checked = (Math.random() < 0.5);
 		document.getElementById("ID_REPULSION").value = getRandom(0, 100);
 		document.getElementById("ID_ATTRACTION").value = getRandom(0, 10);
