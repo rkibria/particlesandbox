@@ -390,6 +390,7 @@ function ParticleSwarm(width, height) {
 	this.clamp_speed = 7;
 	this.repulsion_factor = 0.05;
 	this.attraction_factor = 0.5;
+	this.collisions = [];
 
 	this.reset();
 }
@@ -412,11 +413,14 @@ ParticleSwarm.prototype.getGravitationalForce = function(f, p1, p2, r, factor) {
 	f.set(force * Math.cos(angle), force * Math.sin(angle));
 }
 
-ParticleSwarm.prototype.getForce = function(p1, p2) {
+ParticleSwarm.prototype.getForce = function(p1, p2, r, store_collisions) {
 	const f = new Vec2();
-	let r = getVec2Distance(p1.pos, p2.pos);
 	const td = Math.abs(p1.radius) + Math.abs(p2.radius);
 	if (r < td) {
+		if(store_collisions) {
+			this.collisions.push(new Vec2().copy(p1.pos).add(p2.pos).divideScalar(2));
+		}
+
 		if(this.repulsion_factor != 0 && r != 0) {
 			this.getGravitationalForce(f, p1, p2, r, -this.repulsion_factor);
 		}
@@ -445,26 +449,30 @@ ParticleSwarm.prototype.move = function(particle) {
 	this.torusProjection(particle.pos);
 };
 
-ParticleSwarm.prototype.attractTo = function(p1, p2) {
+ParticleSwarm.prototype.attractTo = function(p1, p2, store_collisions=false) {
 	const m1 = p1.mass;
-	const force = this.getForce(p1, p2);
+	const r = getVec2Distance(p1.pos, p2.pos);
+	const force = this.getForce(p1, p2, r, store_collisions);
 	force.divideScalar(m1);
 	p1.vel.add(force); // a = F/m
 	p1.vel.clampLength(this.clamp_speed);
 };
 
 ParticleSwarm.prototype.attractParticles = function(p1, p2) {
-	this.attractTo(p1, p2);
+	this.attractTo(p1, p2, true);
 	this.attractTo(p2, p1);
 };
 
-ParticleSwarm.prototype.draw = function(context) {
+ParticleSwarm.prototype.computeForcesAndCollisions = function() {
+	this.collisions = [];
 	for (i = 0; i < this.particles_list.length; i++) {
 		for (j = i + 1; j < this.particles_list.length; j++) {
 			this.attractParticles(this.particles_list[i], this.particles_list[j]);
 		}
 	}
+}
 
+ParticleSwarm.prototype.moveAndDraw = function(context) {
 	for (i = 0; i < this.particles_list.length; i++) {
 		const particle = this.particles_list[i];
 		this.move(particle);
@@ -472,6 +480,12 @@ ParticleSwarm.prototype.draw = function(context) {
 		const color = CSS_COLOR_NAMES[i % CSS_COLOR_NAMES.length];
 		particle.draw(context, color);
 	}
+}
+
+ParticleSwarm.prototype.draw = function(context) {
+	this.computeForcesAndCollisions();
+
+	this.moveAndDraw(context);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
