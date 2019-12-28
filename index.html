@@ -472,6 +472,20 @@ ParticleSwarm.prototype.computeForcesAndCollisions = function() {
 	}
 }
 
+ParticleSwarm.prototype.spawnParticles = function() {
+	for(let i = 0; i < this.collisions.length; ++i) {
+		if(this.particles_list.length > this.count * 1.5) {
+			break;
+		}
+		const radius = this.radiusRandom ? getRandomInt(0, this.radius) : this.radius;
+		var particle = new Particle(radius);
+		particle.pos.copy(this.collisions[i]);
+		particle.vel.randomInUnitDisk().multiplyScalar(3);
+		particle.mass = 100;
+		this.particles_list.push(particle);
+	}
+}
+
 ParticleSwarm.prototype.moveAndDraw = function(context) {
 	for (i = 0; i < this.particles_list.length; i++) {
 		const particle = this.particles_list[i];
@@ -484,7 +498,7 @@ ParticleSwarm.prototype.moveAndDraw = function(context) {
 
 ParticleSwarm.prototype.draw = function(context) {
 	this.computeForcesAndCollisions();
-
+	this.spawnParticles();
 	this.moveAndDraw(context);
 };
 
