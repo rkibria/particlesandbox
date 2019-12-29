@@ -85,6 +85,7 @@ body {
 				Repulsion <input type="number" id="ID_REPULSION" min="-100" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Attraction <input type="number" id="ID_ATTRACTION" min="-100" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Friction <input type="number" id="ID_FRICTION" min="0" max="1" value="0.999" step="0.001" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Fall speed <input type="number" id="ID_FALL" min="0" max="10" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Clamp speed <input type="number" id="ID_CLAMP_SPEED" min="0" max="50" value="7" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Spawns <input type="number" id="ID_SPAWN" min="0" value="10" onclick="onResetButton()" onkeydown="onResetButton()">(on collision)<br>
 				Spawn probability <input type="number" id="ID_SPAWN_PROB" min="0" max="1" value="0" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
@@ -390,7 +391,7 @@ function ParticleSwarm(width, height) {
 	this.radiusRandom = false;
 	this.mass = 100;
 	this.friction = 0.999;
-	this.fall_acc = 0.0;
+	this.fall_acc = 1.5;
 	this.clamp_speed = 7;
 	this.repulsion_factor = 0.05;
 	this.attraction_factor = 0.5;
@@ -547,6 +548,7 @@ function readParameters() {
 	particles.repulsion_factor = parseFloat(document.getElementById("ID_REPULSION").value);
 	particles.attraction_factor = parseFloat(document.getElementById("ID_ATTRACTION").value);
 	particles.friction = parseFloat(document.getElementById("ID_FRICTION").value);
+	particles.fall_acc = parseFloat(document.getElementById("ID_FALL").value);
 	particles.clamp_speed = parseFloat(document.getElementById("ID_CLAMP_SPEED").value);
 	particles.max_spawns = parseFloat(document.getElementById("ID_SPAWN").value);
 	particles.spawn_prob = parseFloat(document.getElementById("ID_SPAWN_PROB").value);
@@ -644,6 +646,7 @@ function onRandomizeButton() {
 		document.getElementById("ID_REPULSION").value = getRandom(-50, 50);
 		document.getElementById("ID_ATTRACTION").value = getRandom(-50, 50);
 		document.getElementById("ID_FRICTION").value = getRandom(0, 1);
+		document.getElementById("ID_FALL").value = (Math.random() < 0.5) ? 0 : getRandom(0, 10);
 		document.getElementById("ID_CLAMP_SPEED").value = getRandom(0.01, 50);
 		document.getElementById("ID_SPAWN").value = getRandomInt(0, 100);
 		document.getElementById("ID_SPAWN_PROB").value = (Math.random() < 0.5) ? 0 : getRandom(0, 1);
