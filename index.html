@@ -78,15 +78,15 @@ body {
 		<form>
 			<fieldset>
 			<legend>Particles</legend>
-				Amount: <input type="number" id="ID_PARTICLES" min="1" value="50" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Radius (<0 for squares): <input type="number" id="ID_RADIUS" min="-50" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Amount <input type="number" id="ID_PARTICLES" min="1" value="50" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Radius <input type="number" id="ID_RADIUS" min="-50" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()">(<0 for squares)<br>
 				<input type="checkbox" id="ID_RADIUS_RANDOM" onclick="onResetButton()">Randomize radius<br>
-				Repulsion: <input type="number" id="ID_REPULSION" min="0" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Attraction: <input type="number" id="ID_ATTRACTION" min="0" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Friction: <input type="number" id="ID_FRICTION" min="0" max="1" value="0.999" step="0.001" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Clamp speed: <input type="number" id="ID_CLAMP_SPEED" min="0" max="50" value="7" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Spawns: <input type="number" id="ID_SPAWN" min="0" max="50" value="10" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Spawn prob.: <input type="number" id="ID_SPAWN_PROB" min="0" max="1" value="0.02" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Repulsion <input type="number" id="ID_REPULSION" min="0" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Attraction <input type="number" id="ID_ATTRACTION" min="0" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Friction <input type="number" id="ID_FRICTION" min="0" max="1" value="0.999" step="0.001" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Clamp speed <input type="number" id="ID_CLAMP_SPEED" min="0" max="50" value="7" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Spawns <input type="number" id="ID_SPAWN" min="0" value="10" onclick="onResetButton()" onkeydown="onResetButton()">(on collision)<br>
+				Spawn probability <input type="number" id="ID_SPAWN_PROB" min="0" max="1" value="0.02" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 			</fieldset>
 		</form>
 
@@ -94,7 +94,7 @@ body {
 		<form>
 			<fieldset>
 			<legend>Settings</legend>
-				Background RGB:<br>
+				Background RGB <br>
 				<input type="number" id="ID_BG_R" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				<input type="number" id="ID_BG_G" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				<input type="number" id="ID_BG_B" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
@@ -105,11 +105,11 @@ body {
 		<form>
 			<fieldset>
 			<legend>Postprocessing</legend>
-				Fading: <input type="number" id="ID_FADE" min="0" max="1" value="0.5" step="0.05" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Fading <input type="number" id="ID_FADE" min="0" max="1" value="0.5" step="0.05" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				<input type="checkbox" id="ID_BLUR" onclick="onResetButton()">Blur (reload page to disable!)<br>
-				Rotate deg: <input type="number" id="ID_ROTATE" min="-360" max="360" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Translate x: <input type="number" id="ID_TRANSLATE_X" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Translate y: <input type="number" id="ID_TRANSLATE_Y" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Rotate deg <input type="number" id="ID_ROTATE" min="-360" max="360" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Translate x <input type="number" id="ID_TRANSLATE_X" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Translate y <input type="number" id="ID_TRANSLATE_Y" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 			</fieldset>
 		</form>
 
@@ -483,7 +483,7 @@ ParticleSwarm.prototype.spawnParticles = function() {
 		let particle = null;
 		const radius = this.radiusRandom ? getRandomInt(0, this.radius) : this.radius;
 		if(this.particles_list.length >= this.count + this.max_spawns) {
-			particle = this.particles_list[getRandomInt(0, this.particles_list.length - 1)];
+			particle = this.particles_list[getRandomInt(this.count, this.particles_list.length - 1)];
 			particle.radius = radius;
 		}
 		else {
@@ -637,7 +637,7 @@ function onRandomizeButton() {
 		document.getElementById("ID_ATTRACTION").value = getRandom(0, 10);
 		document.getElementById("ID_FRICTION").value = getRandom(0, 1);
 		document.getElementById("ID_CLAMP_SPEED").value = getRandom(0.01, 50);
-		document.getElementById("ID_SPAWN").value = getRandomInt(0, 50);
+		document.getElementById("ID_SPAWN").value = getRandomInt(0, 100);
 		document.getElementById("ID_SPAWN_PROB").value = (Math.random() < 0.5) ? 0 : getRandom(0, 1);
 
 		document.getElementById("ID_BG_R").value = getRandomInt(0, 255);
