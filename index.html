@@ -85,6 +85,8 @@ body {
 				Attraction: <input type="number" id="ID_ATTRACTION" min="0" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Friction: <input type="number" id="ID_FRICTION" min="0" max="1" value="0.999" step="0.001" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Clamp speed: <input type="number" id="ID_CLAMP_SPEED" min="0" max="50" value="7" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Spawns: <input type="number" id="ID_SPAWN" min="0" max="50" value="10" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Spawn prob.: <input type="number" id="ID_SPAWN_PROB" min="0" max="1" value="0.02" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 			</fieldset>
 		</form>
 
@@ -391,6 +393,8 @@ function ParticleSwarm(width, height) {
 	this.repulsion_factor = 0.05;
 	this.attraction_factor = 0.5;
 	this.collisions = [];
+	this.max_spawns = 50;
+	this.spawn_prob = 0.1;
 
 	this.reset();
 }
@@ -417,7 +421,7 @@ ParticleSwarm.prototype.getForce = function(p1, p2, r, store_collisions) {
 	const f = new Vec2();
 	const td = Math.abs(p1.radius) + Math.abs(p2.radius);
 	if (r < td) {
-		if(store_collisions) {
+		if(store_collisions && this.collisions.length < this.max_spawns) {
 			this.collisions.push(new Vec2().copy(p1.pos).add(p2.pos).divideScalar(2));
 		}
 
@@ -474,15 +478,21 @@ ParticleSwarm.prototype.computeForcesAndCollisions = function() {
 
 ParticleSwarm.prototype.spawnParticles = function() {
 	for(let i = 0; i < this.collisions.length; ++i) {
-		if(this.particles_list.length > this.count * 1.5) {
-			break;
-		}
+		if(Math.random() >= this.spawn_prob)
+			continue;
+		let particle = null;
 		const radius = this.radiusRandom ? getRandomInt(0, this.radius) : this.radius;
-		var particle = new Particle(radius);
+		if(this.particles_list.length >= this.count + this.max_spawns) {
+			particle = this.particles_list[getRandomInt(0, this.particles_list.length - 1)];
+			particle.radius = radius;
+		}
+		else {
+			particle = new Particle(radius);
+			this.particles_list.push(particle);
+		}
 		particle.pos.copy(this.collisions[i]);
 		particle.vel.randomInUnitDisk().multiplyScalar(3);
 		particle.mass = 100;
-		this.particles_list.push(particle);
 	}
 }
 
@@ -531,6 +541,8 @@ function readParameters() {
 	particles.attraction_factor = parseFloat(document.getElementById("ID_ATTRACTION").value);
 	particles.friction = parseFloat(document.getElementById("ID_FRICTION").value);
 	particles.clamp_speed = parseFloat(document.getElementById("ID_CLAMP_SPEED").value);
+	particles.max_spawns = parseFloat(document.getElementById("ID_SPAWN").value);
+	particles.spawn_prob = parseFloat(document.getElementById("ID_SPAWN_PROB").value);
 }
 readParameters();
 particles.reset();
@@ -625,6 +637,8 @@ function onRandomizeButton() {
 		document.getElementById("ID_ATTRACTION").value = getRandom(0, 10);
 		document.getElementById("ID_FRICTION").value = getRandom(0, 1);
 		document.getElementById("ID_CLAMP_SPEED").value = getRandom(0.01, 50);
+		document.getElementById("ID_SPAWN").value = getRandomInt(0, 50);
+		document.getElementById("ID_SPAWN_PROB").value = (Math.random() < 0.5) ? 0 : getRandom(0, 1);
 
 		document.getElementById("ID_BG_R").value = getRandomInt(0, 255);
 		document.getElementById("ID_BG_G").value = getRandomInt(0, 255);
