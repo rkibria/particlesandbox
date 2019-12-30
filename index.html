@@ -108,6 +108,7 @@ body {
 			<fieldset>
 			<legend>Postprocessing</legend>
 				Fading <input type="number" id="ID_FADE" min="0" max="1" value="0.5" step="0.05" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				Snap to grid <input type="number" id="ID_GRID" min="0" max="100" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				<input type="checkbox" id="ID_BLUR" onclick="onResetButton()">Blur (reload page to disable!)<br>
 				Rotate deg <input type="number" id="ID_ROTATE" min="-360" max="360" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Translate x <input type="number" id="ID_TRANSLATE_X" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
@@ -357,11 +358,16 @@ function Particle(radius) {
 	this.lineWidth = 0;
 }
 
-Particle.prototype.draw = function (context, color) {
+Particle.prototype.draw = function (context, color, grid=0) {
 	if (color === undefined) { color = "#ffffff"; }
-	const x = Math.trunc(this.pos.x);
-	const y = Math.trunc(this.pos.y);
+	let x = Math.trunc(this.pos.x);
+	let y = Math.trunc(this.pos.y);
 	let r = Math.trunc(this.radius);
+
+	if(grid != 0) {
+		x = Math.trunc(x / grid) * grid;
+		y = Math.trunc(y / grid) * grid;
+	}
 
 	context.save();
 	context.fillStyle = color;
@@ -371,10 +377,10 @@ Particle.prototype.draw = function (context, color) {
 		context.fillRect(x - r, y - r, d, d);
 	}
 	else {
-		context.translate(Math.trunc(this.pos.x), Math.trunc(this.pos.y));
+		context.translate(x, y);
 		context.lineWidth = 0;
 		context.beginPath();
-		context.arc(0, 0, Math.trunc(this.radius), 0, (Math.PI * 2), true);
+		context.arc(0, 0, r, 0, (Math.PI * 2), true);
 		context.closePath();
 		context.fill();
 	}
@@ -398,6 +404,7 @@ function ParticleSwarm(width, height) {
 	this.collisions = [];
 	this.max_spawns = 50;
 	this.spawn_prob = 0.1;
+	this.grid = 0;
 
 	this.reset();
 }
@@ -509,7 +516,7 @@ ParticleSwarm.prototype.moveAndDraw = function(context) {
 		this.move(particle);
 
 		const color = CSS_COLOR_NAMES[i % CSS_COLOR_NAMES.length];
-		particle.draw(context, color);
+		particle.draw(context, color, this.grid);
 	}
 }
 
@@ -552,6 +559,7 @@ function readParameters() {
 	particles.clamp_speed = parseFloat(document.getElementById("ID_CLAMP_SPEED").value);
 	particles.max_spawns = parseFloat(document.getElementById("ID_SPAWN").value);
 	particles.spawn_prob = parseFloat(document.getElementById("ID_SPAWN_PROB").value);
+	particles.grid = parseFloat(document.getElementById("ID_GRID").value);
 }
 readParameters();
 particles.reset();
@@ -650,6 +658,7 @@ function onRandomizeButton() {
 		document.getElementById("ID_CLAMP_SPEED").value = getRandom(0.01, 50);
 		document.getElementById("ID_SPAWN").value = getRandomInt(0, 100);
 		document.getElementById("ID_SPAWN_PROB").value = (Math.random() < 0.5) ? 0 : getRandom(0, 1);
+		document.getElementById("ID_GRID").value = (Math.random() < 0.5) ? 0 : getRandomInt(0, 200);
 
 		document.getElementById("ID_BG_R").value = getRandomInt(0, 255);
 		document.getElementById("ID_BG_G").value = getRandomInt(0, 255);
