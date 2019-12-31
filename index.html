@@ -30,7 +30,7 @@ html *
 .button1 {font-size: 16px;}
 
 input {
-	width: 30%;
+
 	background-color: #303030;
 	color: white;
 	padding: 1px 2px;
@@ -80,7 +80,7 @@ body {
 			<legend>Particles</legend>
 				Amount <input type="number" id="ID_PARTICLES" min="1" value="50" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Radius <input type="number" id="ID_RADIUS" min="-50" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()">(<0 for squares)<br>
-				<input type="checkbox" id="ID_RADIUS_RANDOM" onclick="onResetButton()">Randomize radius<br>
+				<label for="ID_RADIUS_RANDOM">Randomize radius </label><input type="checkbox" id="ID_RADIUS_RANDOM" onclick="onResetButton()"><br>
 				Mass <input type="number" id="ID_MASS" min="0.001" value="10" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Repulsion <input type="number" id="ID_REPULSION" min="-100" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Attraction <input type="number" id="ID_ATTRACTION" min="-100" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
@@ -109,7 +109,7 @@ body {
 			<legend>Postprocessing</legend>
 				Fading <input type="number" id="ID_FADE" min="0" max="1" value="0.5" step="0.05" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Snap to grid <input type="number" id="ID_GRID" min="0" max="100" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				<input type="checkbox" id="ID_BLUR" onclick="onResetButton()">Blur (reload page to disable!)<br>
+				<label for="ID_BLUR">Blur </label><input type="checkbox" id="ID_BLUR" onclick="onResetButton()"> (reload page to disable!)<br>
 				Rotate deg <input type="number" id="ID_ROTATE" min="-360" max="360" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Translate x <input type="number" id="ID_TRANSLATE_X" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Translate y <input type="number" id="ID_TRANSLATE_Y" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
@@ -405,6 +405,7 @@ function ParticleSwarm(width, height) {
 	this.max_spawns = 50;
 	this.spawn_prob = 0.1;
 	this.grid = 0;
+	this.framecounter = 0;
 
 	this.reset();
 }
@@ -440,12 +441,14 @@ ParticleSwarm.prototype.getForce = function(p1, p2, r, store_collisions) {
 		}
 
 		if(this.repulsion_factor != 0 && r != 0) {
-			this.getGravitationalForce(f, p1, p2, r, -this.repulsion_factor);
+			const factor = Math.sin(this.framecounter * Math.PI / 180) * -this.repulsion_factor;
+			this.getGravitationalForce(f, p1, p2, r, factor);
 		}
 	}
 	else {
 		if(this.attraction_factor != 0) {
-			this.getGravitationalForce(f, p1, p2, r, this.attraction_factor);
+			const factor = Math.sin(this.framecounter * Math.PI / 180) * this.attraction_factor;
+			this.getGravitationalForce(f, p1, p2, r, factor);
 		}
 	}
 	f.y += this.fall_acc;
@@ -520,10 +523,26 @@ ParticleSwarm.prototype.moveAndDraw = function(context) {
 	}
 }
 
+ParticleSwarm.prototype.modifyParticles = function() {
+	for (i = 0; i < this.particles_list.length; i++) {
+		const particle = this.particles_list[i];
+		const abs = Math.abs(this.radius);
+		const sign = abs / this.radius;
+		const t = (this.framecounter + i * 5) * Math.PI / 180;
+		const radius = sign * (1 + abs * Math.abs(Math.sin(t)));
+		particle.radius = radius;
+		particle.mass = this.getMass(radius);
+	}
+}
+
 ParticleSwarm.prototype.draw = function(context) {
+	this.modifyParticles();
+
 	this.computeForcesAndCollisions();
 	this.spawnParticles();
 	this.moveAndDraw(context);
+
+	this.framecounter += 1;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
