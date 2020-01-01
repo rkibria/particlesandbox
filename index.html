@@ -429,8 +429,10 @@ function ParticleSwarm(width, height) {
 	this.friction = 0.999;
 	this.fall_acc = 1.5;
 	this.clamp_speed = 7;
-	this.repulsion_factor = 0.05;
 	this.attraction_factor = 0.5;
+	this.attraction_period = 0;
+	this.repulsion_factor = 0.05;
+	this.repulsion_period = 0;
 	this.collisions = [];
 	this.max_spawns = 50;
 	this.spawn_prob = 0.1;
@@ -471,13 +473,13 @@ ParticleSwarm.prototype.getForce = function(p1, p2, r, store_collisions) {
 		}
 
 		if(this.repulsion_factor != 0 && r != 0) {
-			const factor = Math.sin(this.framecounter * Math.PI / 180) * -this.repulsion_factor;
+			const factor = this.getPeriodicValue(this.repulsion_period) * -this.repulsion_factor;
 			this.getGravitationalForce(f, p1, p2, r, factor);
 		}
 	}
 	else {
 		if(this.attraction_factor != 0) {
-			const factor = Math.sin(this.framecounter * Math.PI / 180) * this.attraction_factor;
+			const factor = this.getPeriodicValue(this.attraction_period) * this.attraction_factor;
 			this.getGravitationalForce(f, p1, p2, r, factor);
 		}
 	}
@@ -606,8 +608,10 @@ function readParameters() {
 	particles.radius_period = parseFloat(document.getElementById("ID_RADIUS_PERIOD").value);
 	particles.radius_random = document.getElementById("ID_RADIUS_RANDOM").checked;
 	particles.mass = parseFloat(document.getElementById("ID_MASS").value);
-	particles.repulsion_factor = parseFloat(document.getElementById("ID_REPULSION").value);
 	particles.attraction_factor = parseFloat(document.getElementById("ID_ATTRACTION").value);
+	particles.attraction_period = parseFloat(document.getElementById("ID_ATTRACTION_PERIOD").value);
+	particles.repulsion_factor = parseFloat(document.getElementById("ID_REPULSION").value);
+	particles.repulsion_period = parseFloat(document.getElementById("ID_REPULSION_PERIOD").value);
 	particles.friction = parseFloat(document.getElementById("ID_FRICTION").value);
 	particles.fall_acc = parseFloat(document.getElementById("ID_FALL").value);
 	particles.clamp_speed = parseFloat(document.getElementById("ID_CLAMP_SPEED").value);
@@ -703,11 +707,13 @@ function onRandomizeButton() {
 	{
 		document.getElementById("ID_PARTICLES").value = getRandomInt(1, 200);
 		document.getElementById("ID_RADIUS").value = getRandomInt(-50, 50);
-		document.getElementById("ID_RADIUS_PERIOD").value = (Math.random() < 0.5) ? 0 : getRandom(0, 30);
+		document.getElementById("ID_RADIUS_PERIOD").value = (Math.random() < 0.5) ? 0 : getRandom(0, 5);
 		document.getElementById("ID_RADIUS_RANDOM").checked = (Math.random() < 0.5);
 		document.getElementById("ID_MASS").value = getRandom(1, 200);
-		document.getElementById("ID_REPULSION").value = getRandom(-50, 50);
 		document.getElementById("ID_ATTRACTION").value = getRandom(-50, 50);
+		document.getElementById("ID_ATTRACTION_PERIOD").value = (Math.random() < 0.5) ? 0 : getRandom(0, 30);
+		document.getElementById("ID_REPULSION").value = getRandom(-50, 50);
+		document.getElementById("ID_REPULSION_PERIOD").value = (Math.random() < 0.5) ? 0 : getRandom(0, 30);
 		document.getElementById("ID_FRICTION").value = getRandom(0, 1);
 		document.getElementById("ID_FALL").value = (Math.random() < 0.5) ? 0 : getRandom(0, 10);
 		document.getElementById("ID_CLAMP_SPEED").value = getRandom(0.01, 50);
