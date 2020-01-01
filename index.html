@@ -30,7 +30,7 @@ html *
 .button1 {font-size: 16px;}
 
 input {
-
+	width: 90px;
 	background-color: #303030;
 	color: white;
 	padding: 1px 2px;
@@ -38,6 +38,10 @@ input {
 	border: none;
 	border-radius: 1px;
 	cursor: pointer;
+}
+
+.checkbox1 {
+	width: 20px;
 }
 
 .float-left-child {
@@ -80,10 +84,24 @@ body {
 			<legend>Particles</legend>
 				Amount <input type="number" id="ID_PARTICLES" min="1" value="50" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Radius <input type="number" id="ID_RADIUS" min="-50" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()">(<0 for squares)<br>
-				<label for="ID_RADIUS_RANDOM">Randomize radius </label><input type="checkbox" id="ID_RADIUS_RANDOM" onclick="onResetButton()"><br>
+				<label for="ID_RADIUS_RANDOM">Randomize radius </label><input type="checkbox" id="ID_RADIUS_RANDOM" onclick="onResetButton()" class="input checkbox1"><br>
 				Mass <input type="number" id="ID_MASS" min="0.001" value="10" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Repulsion <input type="number" id="ID_REPULSION" min="-100" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Attraction <input type="number" id="ID_ATTRACTION" min="-100" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
+				<div class='parent'>
+					<div class='child float-left-child'>
+						Attract(far) <input type="number" id="ID_ATTRACTION" min="-100" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+					<div class='child float-left-child'>
+						Period <input type="number" id="ID_ATTRACTION_PERIOD" min="0" max="100" value="0" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+				</div>
+				<div class='parent'>
+					<div class='child float-left-child'>
+						Repulse <input type="number" id="ID_REPULSION" min="-100" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+					<div class='child float-left-child'>
+						Period <input type="number" id="ID_REPULSION_PERIOD" min="0" max="100" value="0" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+				</div>
 				Friction <input type="number" id="ID_FRICTION" min="0" max="1" value="0.999" step="0.001" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Fall speed <input type="number" id="ID_FALL" min="0" max="10" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Clamp speed <input type="number" id="ID_CLAMP_SPEED" min="0" max="50" value="7" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
@@ -95,21 +113,22 @@ body {
 		<p style="margin-bottom:1px;">
 		<form>
 			<fieldset>
-			<legend>Settings</legend>
-				Background RGB <br>
-				<input type="number" id="ID_BG_R" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				<input type="number" id="ID_BG_G" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				<input type="number" id="ID_BG_B" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-			</fieldset>
-		</form>
-
-		<p style="margin-bottom:1px;">
-		<form>
-			<fieldset>
-			<legend>Postprocessing</legend>
+			<legend>Effects</legend>
+				Background RGB<br>
+				<div class='parent'>
+					<div class='child float-left-child'>
+						<input type="number" id="ID_BG_R" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+					<div class='child float-left-child'>
+						<input type="number" id="ID_BG_G" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+					<div class='child float-left-child'>
+						<input type="number" id="ID_BG_B" min="0" max="255" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+				</div>
 				Fading <input type="number" id="ID_FADE" min="0" max="1" value="0.5" step="0.05" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Snap to grid <input type="number" id="ID_GRID" min="0" max="100" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				<label for="ID_BLUR">Blur </label><input type="checkbox" id="ID_BLUR" onclick="onResetButton()"> (reload page to disable!)<br>
+				<label for="ID_BLUR">Blur </label><input type="checkbox" id="ID_BLUR" onclick="onResetButton()" class="input checkbox1"> (reload page to disable!)<br>
 				Rotate deg <input type="number" id="ID_ROTATE" min="-360" max="360" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Translate x <input type="number" id="ID_TRANSLATE_X" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Translate y <input type="number" id="ID_TRANSLATE_Y" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
