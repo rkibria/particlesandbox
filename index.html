@@ -379,6 +379,7 @@ function getVec2Angle(v1, v2) {
 function Particle(radius) {
 	this.pos = new Vec2();
 	this.vel = new Vec2();
+	this.baseRadius = radius;
 	this.radius = radius;
 	this.mass = 1;
 	this.lineWidth = 0;
@@ -563,7 +564,7 @@ ParticleSwarm.prototype.getPeriodicValue = function(period) {
 ParticleSwarm.prototype.modifyParticles = function() {
 	for (i = 0; i < this.particles_list.length; i++) {
 		const particle = this.particles_list[i];
-		const abs = Math.abs(this.radius);
+		const abs = Math.abs(particle.baseRadius);
 		const sign = this.radius >= 0 ? 1 : -1;
 		const radius = sign * abs * Math.abs(this.getPeriodicValue(this.radius_period));
 		particle.radius = radius;
