@@ -83,29 +83,36 @@ body {
 			<fieldset>
 			<legend>Particles</legend>
 				Amount <input type="number" id="ID_PARTICLES" min="1" value="50" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Radius <input type="number" id="ID_RADIUS" min="-50" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()">(<0 for squares)<br>
+				<div class='parent'>
+					<div class='child float-left-child'>
+						<label for="ID_RADIUS" title="Use values <0 for squares">Radius</label> <input type="number" id="ID_RADIUS" min="-50" max="50" value="3" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+					<div class='child float-left-child'>
+						<label for="ID_RADIUS" title="In seconds. Oscillate between 1 and max. 0 for none.">Period</label> <input type="number" id="ID_RADIUS_PERIOD" min="0" max="100" value="0" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()">
+					</div>
+				</div>
 				<label for="ID_RADIUS_RANDOM">Randomize radius </label><input type="checkbox" id="ID_RADIUS_RANDOM" onclick="onResetButton()" class="input checkbox1"><br>
 				Mass <input type="number" id="ID_MASS" min="0.001" value="10" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				<div class='parent'>
 					<div class='child float-left-child'>
-						Attract(far) <input type="number" id="ID_ATTRACTION" min="-100" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()">
+						<label for="ID_ATTRACTION" title="When particles don't touch.">Attraction</label> <input type="number" id="ID_ATTRACTION" min="-100" max="100" value="0.5" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()">
 					</div>
 					<div class='child float-left-child'>
-						Period <input type="number" id="ID_ATTRACTION_PERIOD" min="0" max="100" value="0" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()">
+						<label for="ID_ATTRACTION_PERIOD" title="In seconds. Oscillate between 1 and max. 0 for none.">Period</label> <input type="number" id="ID_ATTRACTION_PERIOD" min="0" max="100" value="0" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()">
 					</div>
 				</div>
 				<div class='parent'>
 					<div class='child float-left-child'>
-						Repulse <input type="number" id="ID_REPULSION" min="-100" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()">
+						<label for="ID_REPULSION" title="When particles touch.">Repulsion</label> <input type="number" id="ID_REPULSION" min="-100" max="100" value="0.1" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()">
 					</div>
 					<div class='child float-left-child'>
-						Period <input type="number" id="ID_REPULSION_PERIOD" min="0" max="100" value="0" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()">
+						<label for="ID_REPULSION_PERIOD" title="In seconds. Oscillate between 1 and max. 0 for none.">Period</label> <input type="number" id="ID_REPULSION_PERIOD" min="0" max="100" value="0" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()">
 					</div>
 				</div>
 				Friction <input type="number" id="ID_FRICTION" min="0" max="1" value="0.999" step="0.001" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Fall speed <input type="number" id="ID_FALL" min="0" max="10" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Clamp speed <input type="number" id="ID_CLAMP_SPEED" min="0" max="50" value="7" step="0.1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				Spawns <input type="number" id="ID_SPAWN" min="0" value="10" onclick="onResetButton()" onkeydown="onResetButton()">(on collision)<br>
+				<label for="ID_SPAWN" title="Create new particles on collision.">Spawns</label> <input type="number" id="ID_SPAWN" min="0" value="10" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Spawn probability <input type="number" id="ID_SPAWN_PROB" min="0" max="1" value="0" step="0.01" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 			</fieldset>
 		</form>
@@ -128,7 +135,7 @@ body {
 				</div>
 				Fading <input type="number" id="ID_FADE" min="0" max="1" value="0.5" step="0.05" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Snap to grid <input type="number" id="ID_GRID" min="0" max="100" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
-				<label for="ID_BLUR">Blur </label><input type="checkbox" id="ID_BLUR" onclick="onResetButton()" class="input checkbox1"> (reload page to disable!)<br>
+				<label for="ID_BLUR" title="Buggy, must reload page to disable!">Blur </label><input type="checkbox" id="ID_BLUR" onclick="onResetButton()" class="input checkbox1"><br>
 				Rotate deg <input type="number" id="ID_ROTATE" min="-360" max="360" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Translate x <input type="number" id="ID_TRANSLATE_X" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
 				Translate y <input type="number" id="ID_TRANSLATE_Y" min="-800" max="800" value="0" step="1" onclick="onResetButton()" onkeydown="onResetButton()"><br>
