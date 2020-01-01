@@ -390,6 +390,9 @@ Particle.prototype.draw = function (context, color, grid=0) {
 	let y = Math.trunc(this.pos.y);
 	let r = Math.trunc(this.radius);
 
+	if(r == 0)
+		return;
+
 	if(grid != 0) {
 		x = Math.trunc(x / grid) * grid;
 		y = Math.trunc(y / grid) * grid;
@@ -420,7 +423,8 @@ function ParticleSwarm(width, height) {
 
 	this.count = 10;
 	this.radius = 3;
-	this.radiusRandom = false;
+	this.radius_period = 0;
+	this.radius_random = false;
 	this.mass = 100;
 	this.friction = 0.999;
 	this.fall_acc = 1.5;
@@ -443,7 +447,7 @@ ParticleSwarm.prototype.getMass = function(radius) {
 ParticleSwarm.prototype.reset = function() {
 	this.particles_list = [];
 	for (i = 0; i < this.count; i++) {
-		const radius = this.radiusRandom ? getRandomInt(0, this.radius) : this.radius;
+		const radius = this.radius_random ? getRandomInt(0, this.radius) : this.radius;
 		var particle = new Particle(radius);
 		particle.pos.randomInRange(0, this.width, 0, this.height);
 		particle.vel.randomInUnitDisk().multiplyScalar(3);
@@ -524,7 +528,7 @@ ParticleSwarm.prototype.spawnParticles = function() {
 		if(Math.random() >= this.spawn_prob)
 			continue;
 		let particle = null;
-		const radius = this.radiusRandom ? getRandomInt(0, this.radius) : this.radius;
+		const radius = this.radius_random ? getRandomInt(0, this.radius) : this.radius;
 		if(this.particles_list.length >= this.count + this.max_spawns) {
 			particle = this.particles_list[getRandomInt(this.count, this.particles_list.length - 1)];
 			particle.radius = radius;
@@ -549,13 +553,17 @@ ParticleSwarm.prototype.moveAndDraw = function(context) {
 	}
 }
 
+ParticleSwarm.prototype.getPeriodicValue = function(period) {
+	const t = period == 0 ? 0 : (2 * Math.PI / period * this.framecounter / 60);
+	return Math.cos(t);
+}
+
 ParticleSwarm.prototype.modifyParticles = function() {
 	for (i = 0; i < this.particles_list.length; i++) {
 		const particle = this.particles_list[i];
 		const abs = Math.abs(this.radius);
-		const sign = abs / this.radius;
-		const t = (this.framecounter + i * 5) * Math.PI / 180;
-		const radius = sign * (1 + abs * Math.abs(Math.sin(t)));
+		const sign = this.radius >= 0 ? 1 : -1;
+		const radius = sign * abs * Math.abs(this.getPeriodicValue(this.radius_period));
 		particle.radius = radius;
 		particle.mass = this.getMass(radius);
 	}
@@ -595,7 +603,8 @@ function readParameters() {
 
 	particles.count = parseFloat(document.getElementById("ID_PARTICLES").value);
 	particles.radius = parseFloat(document.getElementById("ID_RADIUS").value);
-	particles.radiusRandom = document.getElementById("ID_RADIUS_RANDOM").checked;
+	particles.radius_period = parseFloat(document.getElementById("ID_RADIUS_PERIOD").value);
+	particles.radius_random = document.getElementById("ID_RADIUS_RANDOM").checked;
 	particles.mass = parseFloat(document.getElementById("ID_MASS").value);
 	particles.repulsion_factor = parseFloat(document.getElementById("ID_REPULSION").value);
 	particles.attraction_factor = parseFloat(document.getElementById("ID_ATTRACTION").value);
@@ -694,6 +703,7 @@ function onRandomizeButton() {
 	{
 		document.getElementById("ID_PARTICLES").value = getRandomInt(1, 200);
 		document.getElementById("ID_RADIUS").value = getRandomInt(-50, 50);
+		document.getElementById("ID_RADIUS_PERIOD").value = (Math.random() < 0.5) ? 0 : getRandom(0, 30);
 		document.getElementById("ID_RADIUS_RANDOM").checked = (Math.random() < 0.5);
 		document.getElementById("ID_MASS").value = getRandom(1, 200);
 		document.getElementById("ID_REPULSION").value = getRandom(-50, 50);
