@@ -459,9 +459,9 @@ ParticleSwarm.prototype.reset = function() {
 	}
 }
 
-ParticleSwarm.prototype.getGravitationalForce = function(f, p1, p2, r, factor) {
+ParticleSwarm.prototype.getGravitationalForce = function(f, p1, p2, r, factor, power=2) {
 	const angle = getVec2Angle(p1.pos, p2.pos);
-	const force = factor * p1.mass * p2.mass * 1 / Math.pow(r, 2);
+	const force = factor * p1.mass * p2.mass * 1 / Math.pow(r, power);
 	f.set(force * Math.cos(angle), force * Math.sin(angle));
 }
 
@@ -473,9 +473,11 @@ ParticleSwarm.prototype.getForce = function(p1, p2, r, store_collisions) {
 			this.collisions.push(new Vec2().copy(p1.pos).add(p2.pos).divideScalar(2));
 		}
 
-		if(this.repulsion_factor != 0 && r != 0) {
+		if(this.repulsion_factor != 0) {
+			if(r == 0)
+				r = 1;
 			const factor = this.getPeriodicValue(this.repulsion_period) * -this.repulsion_factor;
-			this.getGravitationalForce(f, p1, p2, r, factor);
+			this.getGravitationalForce(f, p1, p2, r, factor, 3);
 		}
 	}
 	else {
